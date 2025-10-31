@@ -1,0 +1,33 @@
+# Build trees
+/build/
+
+# Visual Studio artifacts
+/.vs/
+*.vcxproj.user
+*.suo
+*.user
+
+# Compiled binaries
+*.exe
+*.dll
+*.lib
+*.exp
+*.pdb
+
+# CUDA intermediate files
+*.cubin
+*.ptx
+*.fatbin
+*.cudafe*
+*.gpu
+
+# Logs
+*.log
+
+# Python/R bindings (future)
+__pycache__/
+*.pyc
+
+# Local docs
+architecture.md
+claude.md
