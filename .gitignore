@@ -24,9 +24,21 @@
 # Logs
 *.log
 
+# Data files (keep repository lightweight)
+data/*.bin
+data/*.txt
+
 # Python/R bindings (future)
 __pycache__/
 *.pyc
+
+# Documentation (generated)
+docs/html/
+docs/latex/
+docs/xml/
+
+# Profiling results
+profiles/
 
 # Local docs
 architecture.md

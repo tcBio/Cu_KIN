@@ -21,6 +21,7 @@ endif()
 
 # ---- Options ----------------------------------------------------------------
 option(BUILD_TESTS "Build GPU kinship test binaries." ON)
+option(BUILD_PYTHON_BINDINGS "Build Python bindings with pybind11." OFF)
 option(KINSHIP_ENABLE_FAST_MATH "Enable CUDA fast math optimizations." OFF)
 
 # ---- Directories ------------------------------------------------------------
@@ -32,4 +33,8 @@ add_subdirectory(src)
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+if(BUILD_PYTHON_BINDINGS)
+    add_subdirectory(python)
 endif()

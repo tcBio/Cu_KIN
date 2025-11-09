@@ -1,4 +1,4 @@
-name: Build
+name: Build and Test
 
 on:
   push:
@@ -21,8 +21,57 @@ jobs:
 
       - name: Configure
         shell: pwsh
-        run: cmake -B build -S . -G "Visual Studio 17 2022" -A x64 -DBUILD_TESTS=OFF -DCMAKE_CUDA_ARCHITECTURES=86
+        run: cmake -B build -S . -G "Visual Studio 17 2022" -A x64 -DBUILD_TESTS=ON -DCMAKE_CUDA_ARCHITECTURES="80;86;90"
 
       - name: Build
         shell: pwsh
         run: cmake --build build --config Release
+
+      - name: Run Tests
+        shell: pwsh
+        run: ctest --test-dir build -C Release --output-on-failure
+
+  linux-cuda:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install CUDA Toolkit
+        uses: Jimver/cuda-toolkit@v0.2.14
+        with:
+          cuda: '12.4.1'
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+
+      - name: Configure
+        run: cmake -B build -S . -DBUILD_TESTS=ON -DCMAKE_CUDA_ARCHITECTURES="80;86;90" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release -j$(nproc)
+
+      - name: Run Tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+  macos-build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Build Dependencies
+        run: brew install cmake
+
+      - name: Configure (CPU-only build)
+        run: cmake -B build -S . -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release -j$(sysctl -n hw.ncpu)
+
+      - name: Run Tests (CPU reference only)
+        run: echo "Note: macOS build for CPU reference implementation only (no CUDA)"
